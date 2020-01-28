@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Validation</title>
+    <style>
+        form{
+            max-width: 800px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    {{info}}
+    <form>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email</label>
+            <input v-model="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <span v-if="error.email" style="color: red;">{{error.email}}</span>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input v-model="password" type="password" class="form-control" id="exampleInputPassword1">
+            <span v-if="error.password" style="color: red">{{error.password}}</span>
+        </div>
+        <button type="submit" class="btn btn-primary" @click.prevent="res()">Submit</button>
+    </form>
+</div>
+
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data () {
+            return {
+                info: null,
+                email: "",
+                password :"",
+                error: ""
+            }
+        },
+        methods: {
+            res() {
+                let recup = new FormData()
+                        recup.append('email', this.email),
+                        recup.append('password', this.password),//id ; nom du parametre de new form
+                fetch('http://0.0.0.0:8080/register.php', {
+                    method: 'POST',
+                    headers: new Headers(),
+                    body: recup
+                })
+
+                    .then((res) => res.json())
+
+                    .then((data) => {
+                        console.log(data)
+                        this.error = data
+                        console.log(this.error)
+                        /* axios
+                    .get('http://0.0.0.0:8080/register.php')
+                    .then(response => (this.info = response))
+                    .catch((response) => {console.log(response)})*/
+                    })
+
+
+            }
+        }
+    })
+</script>
+</html>
